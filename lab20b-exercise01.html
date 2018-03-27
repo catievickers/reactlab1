@@ -11,8 +11,41 @@
     <script src="https://fb.me/react-15.2.1.js"></script>
     <script src="https://fb.me/react-dom-15.2.1.js"></script>
     <!--Initially, we will use the babel run-time library to convert JSX in the browser -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>    
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script> 
+    <!-- There are several ways of creating a React component. The newer approach is shown here: using a class -->
+    
+     <script type = "text/babel">
+      /*
+      There are several ways of creating a React componenet. The traditional approach is shown here: the createClass function
+      */
+      const Company = React.createClass({
+        render: function() {
+          return (
+            <article className="box media ">
+              <div className="media-left">
+                <figure className="image is-128x128">
+                  <img src="images/AMZN.svg" />
+                </figure>
+              </div>
+              <div className="media-content">
+                <h2>Amazon</h2>
+                <p><strong>Symbol:</strong> AMZN</p>
+                <p><strong>Sector:</strong> Consumer Discretionary</p>
+                <p><strong>HQ:</strong> Seattle, Washington</p>
+              </div>
+              <div className="media-right">
+                <button className="button is-primary">Edit</button>
+              </div>
+            </article>
+          );
+        }
+      });
+      /*
+      We now need to aedd the just-defined component to the browser DOM
+      */
+      ReactDOM.render(<Company />, document.querySelector('#react-container')); 
+    </script>
+    
   </head>
   <body>
     

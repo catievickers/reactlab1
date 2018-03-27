@@ -17,12 +17,39 @@
 <script type="text/babel">
 
 /* In this example we are adding in a more sophisticated parent that contains Company data
-
    Notice how we have moved the content out of the markup and into a data array in the component's state
    Notice also then that the parent is responsible for populating the state of its children components
 */
 
-
+const Portfolio = React.createClass({
+  /* the parent will contain the data needed for the children */
+  getInitialState: function() {
+    return {
+      companies: [
+        { name: "Amazon", symbol: "AMZN", sector: "Consumer Discretionary", hq: "Seattle, Washington" },
+        { name: "Alphabet Inc Class A", symbol: "GOOG", sector: "Information Technology", hq: "Mountain View, California" },
+        { name: "Apple", symbol: "AAPL", sector: "Information Technology", hq: "Cupertino, California" },
+        { name: "AT&T", symbol: "T", sector: "Telecommunication Services", hq: "Dallas, Texas" }
+      ]
+    }
+  },
+  
+  /* This function will be responsible for generating a single populated Company element from the passed company data literal */
+  createCompany: function (obj, ind) {
+    return (<Company symbol={obj.symbol}
+                    sector={obj.sector}
+                    hq={obj.hq}
+                    key={ind}
+                    index={ind}>{obj.name}</Company>)
+  },
+  
+  /*The render for this component will loop through our data and generate the appropriate Company elements */
+  render: function() {
+    return (
+      <div> { this.state.companies.map(this.createCompany) } </div>
+      );
+  }
+});
 
 
 const Company = React.createClass({
@@ -96,16 +123,8 @@ const Company = React.createClass({
 });
 
 /* you will need to delete this ... */
-var app = (
-  <div>
-      <Company symbol="AMZN" sector="Consumer Discretionary" hq="Seattle, Washington">Amazon</Company>
-      <Company symbol="GOOG" sector="Information Technology" hq="Mountain View, California">Alphabet Inc Class A</Company>
-      <Company symbol="AAPL" sector="Information Technology" hq="Cupertino, California">Apple</Company>
-      <Company symbol="T" sector="Telecommunications Services" hq="Dallas, Texas">AT&T</Company>
-  </div>
-);
     
-ReactDOM.render(app, document.querySelector('#react-container'));          
+ReactDOM.render(<Portfolio />, document.querySelector('#react-container'));          
   
 </script> 
         

@@ -36,7 +36,13 @@ const Portfolio = React.createClass({
                       {name: "AT&T", symbol: "T", sector: "Telecommunications Services", hq: "Dallas, Texas"}
                   ]
       }
-  },  
+  },
+  
+  addCompany: function () {
+    let tempArray = this.state.companies;
+    tempArray.push({ name: "New Company", symbol: "", sector: "", hq: ""});
+    this.setState({companies: tempArray});
+ },
   
   /* This function will be responsible for generating a single populated Company element from 
      the passed company data literal */
@@ -72,11 +78,13 @@ const Portfolio = React.createClass({
   /* the render for this component will loop through our data and generate the appropriate Company elements */              
   render: function() {
       return (
-          <div> 
-             
-            { this.state.companies.map(this.createCompany) } 
+        <div>
+          <div className="box">
+            <button className="button is-primary" onClick={this.addCompany}>Add Company</button>
           </div>
-          );
+          { this.state.companies.map(this.createCompany) }
+        </div>
+      );
   }
     
 });

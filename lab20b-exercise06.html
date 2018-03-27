@@ -23,11 +23,19 @@
 */
 const Company = React.createClass({
   
+  getInitialState: function() {
+    return {edit: false}
+  },
+  
   edit: function() {
-      alert("now editing");
+      this.setState({editing: true});
+  },
+  
+  save: function() {
+    this.setState({editing: false});
   },
                             
-  render: function() {
+  renderNormal: function() {
     return (
       <article className="box media ">
         <div className="media-left">
@@ -46,6 +54,32 @@ const Company = React.createClass({
         </div>                     
       </article>
     );
+  },
+  renderEdit: function() {
+    return (
+      <article className="box media">
+        <div className="media-left">
+          <figure className="image is-128x128">
+            <img src= {"images/" + this.props.symbol + ".svg"} />
+          </figure>
+        </div>
+        <div className="media-content">
+          <h2><input type="text" className="input" defaultValue={this.props.children} /></h2>
+          <p><strong>Symbol:</strong> <input type="text" className="input" defaultValue={this.props.symbol} /></p>
+          <p><strong>Sector:</strong> <input type="text" className="input" defaultValue={this.props.sector} /></p>
+          <p><strong>HQ:</strong> <input type="text" className="input" defaultValue={this.props.hq} /></p>
+        </div>
+        <div clasName="media-right">
+          <button className="button is-info" onClick={this.save}>Save</button>
+        </div>
+      </article>
+    );
+  },
+  render: function() {
+    if (this.state.editing)
+      return this.renderEdit();
+    else
+      return this.renderNormal();
   }
 });
 

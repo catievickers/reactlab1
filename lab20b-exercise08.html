@@ -26,6 +26,8 @@
 
 const Portfolio = React.createClass({
   
+
+  
   /* the parent will contain the data needed for the children */
   getInitialState: function() {
       return {
@@ -45,9 +47,28 @@ const Portfolio = React.createClass({
                                     sector={obj.sector} 
                                     hq={obj.hq} 
                                     key={ind}
-                                    index={ind}>{obj.name}</Company>)
+                                    index={ind}
+                                    saveData={this.saveCompany}
+                                    removeData={this.deleteCompany}>{obj.name}</Company>)
   },
   
+  /* Notice that the parent is responsible for making changes to the state */
+  saveCompany: function (newName, newSymbol, newSector, newHq, index) {
+    let tempArray = this.state.companies;
+    /*
+   remember that components change their state via setState()
+  */
+    tempArray[index] = { name: newName, symbol: newSymbol,
+    sector: newSector, hq: newHq };
+    this.setState({companies: tempArray});
+  },
+
+ deleteCompany: function (index) {
+  let tempArray = this.state.companies;
+  tempArray.splice(index,1);
+  this.setState({companies: tempArray});
+ },
+
   /* the render for this component will loop through our data and generate the appropriate Company elements */              
   render: function() {
       return (
@@ -75,8 +96,21 @@ const Company = React.createClass({
       this.setState({editing: true});
   },
   save: function() {
+      /* using the ref attributes, retrieve the user input */
+      let newName = this.refs.newName.value;
+      let newSymbol = this.refs.newSymbol.value;
+      let newSector = this.refs.newSector.value;
+      let newHq = this.refs.newHq.value;
+      
+      /*via props we can call the functions in parent that have been passed to the child */
+      this.props.saveData(newName, newSymbol, newSector, newHq, this.props.index);
       this.setState({editing: false});
-  },   
+  },
+  
+  delete: function() {
+    this.props.removeData(this.props.index);
+    this.setState({editing: false});
+  },
                             
   renderNormal: function() {
     return (
@@ -108,13 +142,14 @@ const Company = React.createClass({
               </figure>
         </div>
         <div className="media-content">
-            <h2><input type="text" className="input" defaultValue={this.props.children} /></h2>
-            <p><strong>Symbol:</strong> <input type="text" className="input" defaultValue={this.props.symbol} /></p>
-            <p><strong>Sector:</strong> <input type="text" className="input" defaultValue={this.props.sector} /></p>
-            <p><strong>HQ:</strong> <input type="text" className="input" defaultValue={this.props.hq} /></p>
+            <h2><input type="text" className="input" defaultValue={this.props.children} ref="newName" /></h2>
+            <p><strong>Symbol:</strong> <input type="text" className="input" defaultValue={this.props.symbol} ref="newSymbol" /></p>
+            <p><strong>Sector:</strong> <input type="text" className="input" defaultValue={this.props.sector} ref="newSector" /></p>
+            <p><strong>HQ:</strong> <input type="text" className="input" defaultValue={this.props.hq} ref="newHq" /></p>
         </div>
         <div className="media-right">
           <button className="button is-info" onClick={this.save}>Save</button>
+          <button className="button is-danger" onClick={this.delete} >Delete</button>
         </div>                     
       </article>
     );

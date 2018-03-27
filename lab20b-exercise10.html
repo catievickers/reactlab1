@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lab 20b</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
-    <!--<script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>-->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>
     
     <!--The React JS libraries -->
     <script src="https://fb.me/react-15.2.1.js"></script>
@@ -19,19 +19,16 @@
 /* In this final exercise, you will be implementing reddit-style voting options component to each company
 */
 
-
-
-
 const Portfolio = React.createClass({
   
   /* the parent will contain the data needed for the children */
   getInitialState: function() {
       return {
           companies: [
-                      {name: "Amazon", symbol: "AMZN", sector: "Consumer Discretionary", hq: "Seattle, Washington"},
-                      {name: "Alphabet Inc Class A", symbol: "GOOG", sector: "Information Technology", hq: "Mountain View, California"},
-                      {name: "Apple", symbol: "AAPL", sector: "Information Technology", hq: "Cupertino, California"},
-                      {name: "AT&T", symbol: "T", sector: "Telecommunications Services", hq: "Dallas, Texas"}
+                      {name: "Amazon", symbol: "AMZN", sector: "Consumer Discretionary", hq: "Seattle, Washington", votes:0},
+                      {name: "Alphabet Inc Class A", symbol: "GOOG", sector: "Information Technology", hq: "Mountain View, California", votes:0},
+                      {name: "Apple", symbol: "AAPL", sector: "Information Technology", hq: "Cupertino, California", votes:0},
+                      {name: "AT&T", symbol: "T", sector: "Telecommunications Services", hq: "Dallas, Texas", votes:0}
                   ]
       }
   },  
@@ -42,19 +39,36 @@ const Portfolio = React.createClass({
     return (<Company symbol={obj.symbol} 
                     sector={obj.sector} 
                     hq={obj.hq} 
+                    votes={obj.votes}
                     key={ind}
                     index={ind}
                     saveData={this.saveCompany} 
-                    removeData={this.deleteCompany}>{obj.name}</Company>)
+                    removeData={this.deleteCompany}
+                    upVote={this.upVote}
+                    downVote = {this.downVote}>{obj.name}</Company>
+                    )
   },
   
   /* notice that the parent is responsible for making the change to the state  */
-  saveCompany: function (newName, newSymbol, newSector, newHq, index) {
+  saveCompany: function (newName, newSymbol, newSector, newHq, newVotes, index) {
       let tempArray = this.state.companies;
       /*
       remember that components change their state via setState()
       */
-      tempArray[index] = {name: newName, symbol: newSymbol, sector: newSector, hq: newHq};
+      tempArray[index] = {name: newName, symbol: newSymbol, sector: newSector, hq: newHq, votes: newVotes};
+      tempArray.sort(function (a, b) {return b.votes - a.votes;});
+      this.setState({companies: tempArray});
+  }, 
+  voteDown: function (newName, newSymbol, newSector, newHq, newVotes, index) {
+      let tempArray = this.state.companies;
+      // console.log(newVotes);
+      tempArray[index] = {name: newName, symbol: newSymbol, sector: newSector, hq: newHq, votes: newVotes -1};
+      this.setState({companies: tempArray});
+  }, 
+  voteUp: function (newName, newSymbol, newSector, newHq, newVotes, index) {
+      // console.log(newVotes);
+      let tempArray = this.state.companies;
+      tempArray[index] = {name: newName, symbol: newSymbol, sector: newSector, hq: newHq, votes: newVotes +1};
       this.setState({companies: tempArray});
   }, 
   
@@ -67,7 +81,7 @@ const Portfolio = React.createClass({
   
   addCompany: function () {
       let tempArray = this.state.companies;
-      tempArray.push({name: "New Company", symbol: "", sector: "", hq: ""});
+      tempArray.push({name: "New Company", symbol: "", sector: "", hq: "", votes:0});
       this.setState({companies: tempArray});    
   },
                               
@@ -109,17 +123,37 @@ const Company = React.createClass({
       let newSymbol = this.refs.newSymbol.value;
       let newSector = this.refs.newSector.value;
       let newHq = this.refs.newHq.value;
-      
+      let newVotes = this.props.votes;
       /* via props we can call the functions in parent that have been passed to the child */
-      this.props.saveData(newName, newSymbol, newSector, newHq, this.props.index);
-      console.log('save');
+      this.props.saveData(newName, newSymbol, newSector, newHq, newVotes, this.props.index);
+      // console.log('save');
       this.setState({editing: false});
   },   
   delete: function() {
       this.props.removeData(this.props.index);
-      console.log('delete');
+      // console.log('delete');
       this.setState({editing: false});
   }, 
+  upVote: function(){
+      let newName = this.refs.newName.value;
+      let newSymbol = this.refs.newSymbol.value;
+      let newSector = this.refs.newSector.value;
+      let newHq = this.refs.newHq.value;
+      let newVotes = this.props.votes;
+      // console.log(this.refs.votes);
+
+      /* via props we can call the functions in parent that have been passed to the child */
+      this.props.upVote(newName, newSymbol, newSector, newHq, newVotes, this.props.index);  
+  },
+  downVote: function(){
+      let newName = this.refs.newName.value;
+      let newSymbol = this.refs.newSymbol.value;
+      let newSector = this.refs.newSector.value;
+      let newHq = this.refs.newHq.value;
+      let newVotes = this.props.votes;
+      /* via props we can call the functions in parent that have been passed to the child */
+      this.props.downVote(newName, newSymbol, newSector, newHq, newVotes, this.props.index);  
+  },  
                             
                             
   renderNormal: function() {
@@ -138,6 +172,8 @@ const Company = React.createClass({
         </div>
         <div className="media-right">
           <button className="button is-primary" onClick={this.edit}>Edit</button>
+          <p><strong>votes:</strong> {this.props.votes}</p>
+
         </div>                     
       </article>
     );
@@ -158,8 +194,16 @@ const Company = React.createClass({
             <p><strong>HQ:</strong> <input type="text" className="input" defaultValue={this.props.hq} ref="newHq"/></p>
         </div>
         <div className="media-right">
-          <button className="button is-info" onClick={this.save}>Save</button>
-          <button className="button is-danger" onClick={this.delete} >Delete</button>
+          <div className=" has-text-centered buttons">
+            <button className="button is-info " onClick={this.save}>Save</button>
+            <button className="button is-danger " onClick={this.delete} >Delete</button>
+          </div>
+          <div className="has-text-centered">
+
+                    <p className="is-marginless"><a className="button is-small is-primary" onClick={this.upVote}><span className="icon" ><i className="fas fa-arrow-up"></i></span></a></p>
+                    <p className="is-size-5 has-text-grey-light is-marginless" ><span ref="newVotes">{this.props.votes}</span></p>
+                    <p className="is-marginless"><a className="button is-small is-primary" onClick={this.downVote}><span className="icon"><i className="fas fa-arrow-down"></i></span></a></p>
+         </div>
         </div>                     
       </article>
     );

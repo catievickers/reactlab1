@@ -7,6 +7,38 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>
+    
+    <script type = "text/babel">
+      /*
+      There are several ways of creating a React componenet. The traditional approach is shown here: the createClass function
+      */
+      const Company = React.createClass({
+        render: function() {
+          return (
+            <article className="box media ">
+              <div className="media-left">
+                <figure className="image is-128x128">
+                  <img src="images/AMZN.svg" />
+                </figure>
+              </div>
+              <div className="media-content">
+                <h2>Amazon</h2>
+                <p><strong>Symbol:</strong> AMZN</p>
+                <p><strong>Sector:</strong> Consumer Discretionary</p>
+                <p><strong>HQ:</strong> Seattle, Washington</p>
+              </div>
+              <div className="media-right">
+                <button className="button is-primary">Edit</button>
+              </div>
+            </article>
+          );
+        }
+      });
+      /*
+      We now need to aedd the just-defined component to the browser DOM
+      */
+      ReactDOM.render(<Company />, document.querySelector('#react-container')); 
+    </script>
   </head>
   <body>
     
